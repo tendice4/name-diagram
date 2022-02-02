@@ -1,25 +1,57 @@
-import logo from './logo.svg';
-import './App.css';
+import { useRef } from "react";
+import { graphvizSync, wasmFolder } from "@hpcc-js/wasm";
+import useInput from "./useInput";
 
-function App() {
+wasmFolder("wasm/dist");
+
+export default function App() {
+  const ref = useRef();
+  const [name, onChangeName] = useInput("");
+  const [engine, onChangeEngine] = useInput("dot");
+
+  const create = async () => {
+    const format = "svg";
+
+    const input = `digraph G {
+      ${name
+        .split("")
+        .reduce(
+          (acc, cur, idx, arr) =>
+            idx < arr.length - 1 &&
+            !acc.includes(`  "${cur}" -> "${arr[idx + 1]}"`)
+              ? [...acc, `  "${cur}" -> "${arr[idx + 1]}"`]
+              : acc,
+          []
+        )
+        .join("\n")}
+    }`;
+    const gv = await graphvizSync();
+    const result = gv.layout(input, format, engine);
+    ref.current.innerHTML = result;
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Name Diagram</h1>
+      <input value={name} onChange={onChangeName} />
+      <select value={engine} onChange={onChangeEngine}>
+        {[
+          "circo",
+          "dot",
+          "fdp",
+          "sfdp",
+          "neato",
+          "osage",
+          "patchwork",
+          "twopi",
+        ].map((engine) => (
+          <option key={engine} value={engine}>
+            {engine}
+          </option>
+        ))}
+      </select>
+      <button onClick={create}>create</button>
+      <main ref={ref}></main>
     </div>
   );
 }
-
-export default App;
