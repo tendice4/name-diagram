@@ -1,16 +1,29 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { graphvizSync, wasmFolder } from "@hpcc-js/wasm";
 import useInput from "./useInput";
+import transArray from "./transArray";
 
 wasmFolder("wasm/dist");
+
+const engines = [
+  "circo",
+  "dot",
+  "fdp",
+  "sfdp",
+  "neato",
+  "osage",
+  "patchwork",
+  "twopi",
+];
 
 export default function App() {
   const ref = useRef();
   const [name, onChangeName] = useInput("");
-  const [engine, onChangeEngine] = useInput("dot");
+  const [active, setActive] = useState("");
 
-  const create = async () => {
+  const create = (engine) => async () => {
     const format = "svg";
+    setActive(engine);
 
     const input = `digraph G {
       ${name
@@ -31,27 +44,39 @@ export default function App() {
   };
 
   return (
-    <div>
+    <>
       <h1>Name Diagram</h1>
-      <input value={name} onChange={onChangeName} />
-      <select value={engine} onChange={onChangeEngine}>
-        {[
-          "circo",
-          "dot",
-          "fdp",
-          "sfdp",
-          "neato",
-          "osage",
-          "patchwork",
-          "twopi",
-        ].map((engine) => (
-          <option key={engine} value={engine}>
-            {engine}
-          </option>
-        ))}
-      </select>
-      <button onClick={create}>create</button>
-      <main ref={ref}></main>
-    </div>
+      <article>
+        <p>
+          <input value={name} onChange={onChangeName} maxLength={80} />
+        </p>
+        <p>
+          <div className="button-group">
+            {transArray(engines, (arr) => [
+              ...arr,
+              ...[...new Array((30 - arr.length) % 3)].map(() => ""),
+            ]).map((engine) =>
+              engine === "" ? (
+                <div class="dummy"></div>
+              ) : (
+                <button
+                  key={engine}
+                  onClick={create(engine)}
+                  className={active === engine ? "dark" : ""}
+                >
+                  {engine}
+                </button>
+              )
+            )}
+          </div>
+        </p>
+        <footer>
+          <div ref={ref}></div>
+          {/* <button onClick={() => {}} className="primary">
+            share
+          </button> */}
+        </footer>
+      </article>
+    </>
   );
 }
