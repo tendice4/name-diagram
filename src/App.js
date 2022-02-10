@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { graphvizSync, wasmFolder } from "@hpcc-js/wasm";
 import useInput from "./useInput";
 import transArray from "./transArray";
@@ -28,6 +28,7 @@ export default function App() {
     const input = `digraph G {
       graph[bgcolor="#00000000"];
       ${name
+        .replace(/\s/g, "")
         .split("")
         .reduce(
           (acc, cur, idx, arr) =>
@@ -49,27 +50,33 @@ export default function App() {
       <h1>Name Diagram</h1>
       <article>
         <p>
-          <input value={name} onChange={onChangeName} maxLength={80} />
+          <label>
+            Name
+            <input value={name} onChange={onChangeName} maxLength={500} />
+          </label>
         </p>
         <p>
-          <div className="button-group">
-            {transArray(engines, (arr) => [
-              ...arr,
-              ...[...new Array((30 - arr.length) % 3)].map(() => ""),
-            ]).map((engine) =>
-              engine === "" ? (
-                <div class="dummy"></div>
-              ) : (
-                <button
-                  key={engine}
-                  onClick={create(engine)}
-                  className={active === engine ? "dark" : ""}
-                >
-                  {engine}
-                </button>
-              )
-            )}
-          </div>
+          <label>
+            Engine
+            <div className="button-group">
+              {transArray(engines, (arr) => [
+                ...arr,
+                ...[...new Array((30 - arr.length) % 3)].map(() => ""),
+              ]).map((engine) =>
+                engine === "" ? (
+                  <div class="dummy"></div>
+                ) : (
+                  <button
+                    key={engine}
+                    onClick={create(engine)}
+                    className={active === engine ? "dark" : ""}
+                  >
+                    {engine}
+                  </button>
+                )
+              )}
+            </div>
+          </label>
         </p>
         <footer>
           {result.length > 0 ? <img src={result} /> : null}
