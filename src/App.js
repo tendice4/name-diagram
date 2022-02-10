@@ -17,15 +17,16 @@ const engines = [
 ];
 
 export default function App() {
-  const ref = useRef();
   const [name, onChangeName] = useInput("");
   const [active, setActive] = useState("");
+  const [result, setResult] = useState("");
 
   const create = (engine) => async () => {
     const format = "svg";
     setActive(engine);
 
     const input = `digraph G {
+      graph[bgcolor="#00000000"];
       ${name
         .split("")
         .reduce(
@@ -39,8 +40,8 @@ export default function App() {
         .join("\n")}
     }`;
     const gv = await graphvizSync();
-    const result = gv.layout(input, format, engine);
-    ref.current.innerHTML = result;
+    const svg = gv.layout(input, format, engine);
+    setResult(`data:image/svg+xml,${encodeURIComponent(svg)}`);
   };
 
   return (
@@ -71,7 +72,7 @@ export default function App() {
           </div>
         </p>
         <footer>
-          <div ref={ref}></div>
+          {result.length > 0 ? <img src={result} /> : null}
           {/* <button onClick={() => {}} className="primary">
             share
           </button> */}
