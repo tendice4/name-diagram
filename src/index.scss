@@ -7,9 +7,10 @@
 
 body {
   margin: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow-y: hidden;
+  padding: 3rem 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
   background-color: var(--base);
   color: var(--text);
   display: flex;
@@ -25,6 +26,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  font-family: "Yu Gothic Medium", "游ゴシック Medium", YuGothic, "游ゴシック体",
+    "ヒラギノ角ゴ Pro W3", "メイリオ", sans-serif;
 }
 
 article {
@@ -58,6 +61,7 @@ article {
 
 h1 {
   font-size: 1.5rem;
+  font-weight: lighter;
 }
 
 button {
@@ -110,6 +114,13 @@ button {
   button:nth-last-of-type(1) {
     border-radius: 0 6px 6px 0;
   }
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: left;
 }
 
 input {
