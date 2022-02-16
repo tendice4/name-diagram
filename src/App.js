@@ -28,7 +28,7 @@ export default function App() {
     const input = `digraph G {
       graph[bgcolor="#00000000"];
       ${name
-        .replace(/\s/g, "")
+        .replace(/["\s]/g, "")
         .split("")
         .reduce(
           (acc, cur, idx, arr) =>
