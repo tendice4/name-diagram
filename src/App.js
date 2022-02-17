@@ -56,27 +56,25 @@ export default function App() {
           </label>
         </p>
         <p>
-          <label>
-            Engine
-            <div className="button-group">
-              {transArray(engines, (arr) => [
-                ...arr,
-                ...[...new Array((30 - arr.length) % 3)].map(() => ""),
-              ]).map((engine) =>
-                engine === "" ? (
-                  <div class="dummy"></div>
-                ) : (
-                  <button
-                    key={engine}
-                    onClick={create(engine)}
-                    className={active === engine ? "dark" : ""}
-                  >
-                    {engine}
-                  </button>
-                )
-              )}
-            </div>
-          </label>
+          <label>Engine </label>
+          <div className="button-group">
+            {transArray(engines, (arr) => [
+              ...arr,
+              ...[...new Array((30 - arr.length) % 3)].map(() => ""),
+            ]).map((engine) =>
+              engine === "" ? (
+                <div class="dummy"></div>
+              ) : (
+                <button
+                  key={engine}
+                  onClick={create(engine)}
+                  className={active === engine ? "dark" : ""}
+                >
+                  {engine}
+                </button>
+              )
+            )}
+          </div>
         </p>
         <footer>
           {result.length > 0 ? <img src={result} /> : null}
